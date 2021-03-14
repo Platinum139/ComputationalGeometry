@@ -22,6 +22,7 @@ func main() {
 	// drawComplexBSpline(dc)
 	// drawBSplineBasisFunctions(dc)
 	// drawBSpline(dc)
+	// drawCubicHermiteCurve(dc)
 
 	dc.SavePNG("storage/interpolationCurves/curve.png")
 }
@@ -201,6 +202,72 @@ func drawBSpline(dc *gg.Context) {
 			dc.Fill()
 		}
 	}
+}
+
+func drawCubicHermiteCurve(dc *gg.Context) {
+	// array of points
+	points := []Primitives.Point{
+		{100, 200},
+		{800, 200},
+	}
+	// array of vectors
+	vectors := []Primitives.Point{
+		{500, 500},
+		{600, 500},
+	}
+	// draw points
+	dc.SetColor(color.Black)
+	dc.DrawPoint(points[0].X, points[0].Y, 10)
+	dc.DrawPoint(points[1].X, points[1].Y, 10)
+	dc.Fill()
+
+	// draw vectors
+	dc.SetRGB(0.4, 0.8, 0.0)
+	dc.SetLineWidth(7)
+	dc.DrawLine(points[0].X, points[0].Y, points[0].X + 0.2 * vectors[0].X, points[0].Y + 0.2 * vectors[0].Y)
+	dc.DrawLine(points[1].X, points[1].Y, points[1].X - 0.2 * vectors[1].X, points[1].Y - 0.2 * vectors[1].Y)
+	dc.Stroke()
+
+	// draw hermite curve
+	dc.SetRGB(200, 150, 20)
+	dc.SetLineWidth(5)
+	for t := 0.0; t <= 1.0; t += 0.01 {
+		point := InterpolationCurves.CubicHermiteCurve(points, vectors, t)
+		dc.LineTo(point.X, point.Y)
+	}
+	dc.Stroke()
+
+	// array of points
+	points = []Primitives.Point{
+		{100, 600},
+		{800, 600},
+	}
+	// array of vectors
+	vectors = []Primitives.Point{
+		{1000, 1000},
+		{600, 500},
+	}
+	// draw points
+	dc.SetColor(color.Black)
+	dc.DrawPoint(points[0].X, points[0].Y, 10)
+	dc.DrawPoint(points[1].X, points[1].Y, 10)
+	dc.Fill()
+
+	// draw vectors
+	dc.SetRGB(0.4, 0.8, 0.0)
+	dc.SetLineWidth(7)
+	dc.DrawLine(points[0].X, points[0].Y, points[0].X + 0.2 * vectors[0].X, points[0].Y + 0.2 * vectors[0].Y)
+	dc.DrawLine(points[1].X, points[1].Y, points[1].X - 0.2 * vectors[1].X, points[1].Y - 0.2 * vectors[1].Y)
+	dc.Stroke()
+
+	// draw hermite curve
+	dc.SetRGB(200, 150, 20)
+	dc.SetLineWidth(5)
+	for t := 0.0; t <= 1.0; t += 0.01 {
+		point := InterpolationCurves.CubicHermiteCurve(points, vectors, t)
+		dc.LineTo(point.X, point.Y)
+	}
+	dc.Stroke()
 }
 
 func transformCoordinatesToDisplay(x float64, y float64, xs float64, ys float64, d float64) (float64, float64) {

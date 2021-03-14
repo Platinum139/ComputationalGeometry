@@ -23,6 +23,7 @@ func main() {
 	// drawBSplineBasisFunctions(dc)
 	// drawBSpline(dc)
 	// drawCubicHermiteCurve(dc)
+	// drawTCBSpline(dc)
 
 	dc.SavePNG("storage/interpolationCurves/curve.png")
 }
@@ -268,6 +269,43 @@ func drawCubicHermiteCurve(dc *gg.Context) {
 		dc.LineTo(point.X, point.Y)
 	}
 	dc.Stroke()
+}
+
+func drawTCBSpline(dc *gg.Context) {
+	// array of points
+	points := []Primitives.Point{
+		{100, 400},
+		{300, 250},
+		{300, 500},
+		{400, 550},
+		{500, 450},
+		{600, 600},
+		{700, 700},
+		{450, 650},
+	}
+	drawPolygonalChain(points, dc)
+
+	colors := [][]float64{
+		{0.9, 0.3, 0.0}, {0.0, 0.9, 0.1}, {0.9, 0.9, 0.0},
+		{0.1, 0.7, 0.8}, {0.9, 0.1, 0.9}}
+	m := len(points) - 1
+	t := 0.1
+	c := 0.8
+	b := 0.2
+
+	for k := 1; k < m-1; k++ {
+		p1 := points[k]
+		p2 := points[k+1]
+		q1 := InterpolationCurves.StartVec(points[k-1:k+2], t, c, b)
+		q2 := InterpolationCurves.EndVec(points[k:k+3], t, c, b)
+
+		for i := 0.0; i <= 1.0; i += 0.01 {
+			p := InterpolationCurves.TCBSpline(p1, p2, q1, q2, i)
+			dc.SetRGB(colors[k-1][0], colors[k-1][1], colors[k-1][2])
+			dc.LineTo(p.X, p.Y)
+		}
+		dc.Stroke()
+	}
 }
 
 func transformCoordinatesToDisplay(x float64, y float64, xs float64, ys float64, d float64) (float64, float64) {

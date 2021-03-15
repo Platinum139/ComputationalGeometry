@@ -1,6 +1,7 @@
 package main
 
 import (
+	"Graphics/ConvexHull"
 	"Graphics/InterpolationCurves"
 	"Graphics/Primitives"
 	"github.com/fogleman/gg"
@@ -24,8 +25,9 @@ func main() {
 	// drawBSpline(dc)
 	// drawCubicHermiteCurve(dc)
 	// drawTCBSpline(dc)
+	// drawGrahamScan(dc)
 
-	dc.SavePNG("storage/interpolationCurves/curve.png")
+	dc.SavePNG("storage/convexHull/grahamScan.png")
 }
 
 func drawBezierCurve(dc *gg.Context) {
@@ -306,6 +308,34 @@ func drawTCBSpline(dc *gg.Context) {
 		}
 		dc.Stroke()
 	}
+}
+
+func drawGrahamScan(dc *gg.Context) {
+	points := []Primitives.Point{
+		{100, 400},
+		{800, 600},
+		{450, 500},
+		{300, 600},
+		{350, 750},
+		{250, 300},
+		{150, 550},
+		{250, 400},
+	}
+	// draw points
+	dc.SetColor(color.Black)
+	for i := range points {
+		dc.DrawPoint(points[i].X, points[i].Y, 10)
+		dc.Fill()
+	}
+
+	dc.SetRGB(1.0, 0.1, 0.7)
+	dc.SetLineWidth(8)
+	pointsHull := ConvexHull.GrahamScan(points)
+
+	for i := range pointsHull {
+		dc.LineTo(pointsHull[i].X, pointsHull[i].Y)
+	}
+	dc.Stroke()
 }
 
 func transformCoordinatesToDisplay(x float64, y float64, xs float64, ys float64, d float64) (float64, float64) {

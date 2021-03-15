@@ -3,6 +3,7 @@ package main
 import (
 	"Graphics/ConvexHull"
 	"Graphics/InterpolationCurves"
+	"Graphics/OrientationTests"
 	"Graphics/Primitives"
 	"github.com/fogleman/gg"
 	"image/color"
@@ -27,8 +28,9 @@ func main() {
 	// drawTCBSpline(dc)
 	// drawGrahamScan(dc)
 	// drawGiftWrapping(dc)
+	// drawAngleTest(dc)
 
-	dc.SavePNG("storage/convexHull/giftWrapping.png")
+	dc.SavePNG("storage/orientationTests/angleTest4.png")
 }
 
 func drawBezierCurve(dc *gg.Context) {
@@ -366,6 +368,39 @@ func drawGiftWrapping(dc *gg.Context) {
 		dc.LineTo(pointsHull[i].X, pointsHull[i].Y)
 	}
 	dc.Stroke()
+}
+
+func drawAngleTest(dc *gg.Context) {
+	points := []Primitives.Point{
+		{100, 400},
+		{250, 200},
+		{600, 300},
+		{350, 600},
+		{200, 580},
+		{100, 400},
+	}
+	point := Primitives.Point{X: 500, Y: 420}
+
+	// draw polyline and point
+	drawPolygonalChain(points, dc)
+
+	r := OrientationTests.AngleTest(points[:len(points)-1], point)
+	switch r {
+	// out
+	case 0:
+		dc.SetRGB(1.0, 0.1, 0.1)
+	// in
+	case 1:
+		dc.SetRGB(0.0, 0.9, 0.1)
+	// top
+	case 2:
+		dc.SetRGB(0.1, 0.5, 1.0)
+	// on
+	case 3:
+		dc.SetRGB(1.0, 0.9, 0.0)
+	}
+	dc.DrawPoint(point.X, point.Y, 10)
+	dc.Fill()
 }
 
 func transformCoordinatesToDisplay(x float64, y float64, xs float64, ys float64, d float64) (float64, float64) {

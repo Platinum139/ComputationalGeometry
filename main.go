@@ -26,8 +26,9 @@ func main() {
 	// drawCubicHermiteCurve(dc)
 	// drawTCBSpline(dc)
 	// drawGrahamScan(dc)
+	// drawGiftWrapping(dc)
 
-	dc.SavePNG("storage/convexHull/grahamScan.png")
+	dc.SavePNG("storage/convexHull/giftWrapping.png")
 }
 
 func drawBezierCurve(dc *gg.Context) {
@@ -331,6 +332,35 @@ func drawGrahamScan(dc *gg.Context) {
 	dc.SetRGB(1.0, 0.1, 0.7)
 	dc.SetLineWidth(8)
 	pointsHull := ConvexHull.GrahamScan(points)
+
+	for i := range pointsHull {
+		dc.LineTo(pointsHull[i].X, pointsHull[i].Y)
+	}
+	dc.Stroke()
+}
+
+func drawGiftWrapping(dc *gg.Context) {
+	points := []Primitives.Point{
+		{100, 400},
+		{800, 600},
+		{450, 500},
+		{300, 600},
+		{350, 750},
+		{400, 300},
+		{150, 550},
+		{250, 400},
+		{250, 300},
+	}
+	// draw points
+	dc.SetColor(color.Black)
+	for i := range points {
+		dc.DrawPoint(points[i].X, points[i].Y, 10)
+		dc.Fill()
+	}
+
+	dc.SetRGB(1.0, 0.7, 0.2)
+	dc.SetLineWidth(8)
+	pointsHull := ConvexHull.GiftWrapping(points)
 
 	for i := range pointsHull {
 		dc.LineTo(pointsHull[i].X, pointsHull[i].Y)

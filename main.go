@@ -2,6 +2,7 @@ package main
 
 import (
 	"Graphics/ConvexHull"
+	"Graphics/Fractals"
 	"Graphics/InterpolationCurves"
 	"Graphics/OrientationTests"
 	"Graphics/Primitives"
@@ -29,8 +30,9 @@ func main() {
 	// drawGrahamScan(dc)
 	// drawGiftWrapping(dc)
 	// drawAngleTest(dc)
+	drawSnowflakeKoch(dc)
 
-	dc.SavePNG("storage/orientationTests/angleTest4.png")
+	dc.SavePNG("storage/fractals/snowflakeKoch.png")
 }
 
 func drawBezierCurve(dc *gg.Context) {
@@ -401,6 +403,21 @@ func drawAngleTest(dc *gg.Context) {
 	}
 	dc.DrawPoint(point.X, point.Y, 10)
 	dc.Fill()
+}
+
+func drawSnowflakeKoch(dc *gg.Context) {
+	points := []Primitives.Point{
+		{X: 200, Y: 700},
+		{X: 500, Y: 200},
+		{X: 800, Y: 700},
+	}
+	curvePoints := Fractals.SnowflakeKoch(points, 4)
+	dc.SetRGB(1.0, 0.7, 0.3)
+	dc.SetLineWidth(5)
+	for _, p := range curvePoints{
+		dc.LineTo(p.X, p.Y)
+	}
+	dc.Stroke()
 }
 
 func transformCoordinatesToDisplay(x float64, y float64, xs float64, ys float64, d float64) (float64, float64) {
